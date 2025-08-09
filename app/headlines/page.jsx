@@ -2,35 +2,20 @@
 import { useState, useEffect } from "react";
 
 import Card from "@/components/card";
+import { fetchHeadlines } from "@/app/api/route"; // Import the fetchHeadlines function from the API route
 
 export default function HeadlinesPage() {
   const [headlines, setHeadlines] = useState([]);
   const [loading, setLoading] = useState(true);
-  const fetchHeadlines = async () => {
-    // Replace with your actual API key
-    const apiKey = process.env.NEXT_PUBLIC_API_KEY;
 
-    fetch(
-      `https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}` // Fetching top headlines from the US
-    )
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Fetched headlines:", data);
-        setHeadlines(data.articles);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("There was a problem with the fetch operation:", error);
-        setLoading(false);
-      });
+  const getHeadlinesData = async () => {
+    const res = await fetchHeadlines(); // Fetching general headlines
+    setHeadlines(res.data.articles);
+    setLoading(false);
   };
+
   useEffect(() => {
-    fetchHeadlines();
+    getHeadlinesData();
   }, []);
 
   return (
